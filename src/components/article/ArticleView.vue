@@ -11,8 +11,8 @@
       </div>
       <div>
         <span>
-          Updated
-          {{fmt(data.update_time)}}
+          Created
+          {{fmt(data.create_time)}}
           >
         </span>
         
@@ -29,7 +29,7 @@
 </div>
     <hr>
     <h3>文章点评</h3>
-    <div class="comments" v-if="isComments">
+    <div class="comments" v-if="isComments" id="comments">
       <Comments :is-allow="allow_comment"/>
     </div>
     <div class="comment-close" v-else>
@@ -76,21 +76,51 @@ export default {
                 let {code, data} = await GET('article',{params})
                 state.data = data
                 document.title = getPageTitle(data.title)
+                let { content, title  }= methods.getContentTitle(data.content)
+
+                state.data.content = content
                 state.expand = data.expand
                 if(data.opt.comments){
-                  console.log("has")
-                  if(data.opt.comments.show == "false"){
+                  if(data.opt.comments.show === "false"){
                     state.isComments = false
+                  }else {
+                    title.push({
+                      id: 'comments',
+                      title: '文章点评',
+                    })
                   }
-                  if(data.opt.comments.allow == "false"){
+                  if(data.opt.comments.allow === "false"){
                     state.allow_comment = false
                   }
                 }
-
+              store.dispatch('context/setTitle',title)
             },
             fmt(time){
-                return tool.getTimeToStamp(time)
+                return tool.timetostamp(parseInt(time))
             },
+          getContentTitle(content){
+            let reg = /<h[1-6]>.*?<\/h[1-6]>/g
+            let arr = content.match(reg)
+            let title = []
+            if(arr){
+              arr.forEach(item => {
+                let reg2 = /<h[1-6]>(.*?)<\/h[1-6]>/g
+                let arr2 = item.match(reg2)
+                if(arr2){
+                  // 取随机id
+                  let id = tool.getRandomId()
+                  title.push({
+                    id:id,
+                    title:arr2[0].replace(/<h[1-6]>/g,'').replace(/<\/h[1-6]>/g,'')
+                  })
+                  content = content.replace(item,`<h${arr2[0].replace(/<h[1-6]>/g,'').replace(/<\/h[1-6]>/g,'').length} id="${id}">${arr2[0].replace(/<h[1-6]>/g,'').replace(/<\/h[1-6]>/g,'')}</h${arr2[0].replace(/<h[1-6]>/g,'').replace(/<\/h[1-6]>/g,'').length}>`)
+                }
+              })
+            }
+            return {
+              content:content,
+              title:title}
+          },
         }
         onBeforeRouteUpdate(async(to,from,next)=>{
             state.aid = to.params.id

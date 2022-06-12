@@ -26,7 +26,7 @@
                         data-placement="bottom"
                         title=""
                         data-original-title="1019 words"
-                        > {{fmt(item.update_time)}}</span
+                        > {{fmt(item.last_update_time)}}</span
                       >
                       <i class="far fa-eye fa-fw"></i>
                       <span id="pv_Getting Started" class="pageviews"
@@ -74,7 +74,7 @@ export default {
           state.total = resp.data.count
         },
         fmt(time){
-          return tool.getTimeToStamp(time)
+          return tool.timetostamp(parseInt(time))
         },
         pagintive(val){
           state.current = val

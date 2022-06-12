@@ -48,7 +48,7 @@ export default {
                 document.title = getPageTitle(resp.data.name)
             },
             fmt(time){
-                return tool.getTimeToStamp(time)
+                return tool.timetostamp(time)
             },
             toPage(url){
               router.push({path:url})

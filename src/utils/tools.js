@@ -125,4 +125,77 @@ export class Tools {
         result = arr.filter(item => item % step == 0);
         return result;
     }
+
+    getRandomId() {
+        return Math.random().toString(36).substr(2, 9);
+    }
+
+    // timetostamp 时间戳转换成时间,返回时间格式为：xx年xx月xx日，xx月前，xx周前，xx天前，xx小时前，xx分钟前，刚刚
+    timetostamp(time) {
+        let date = new Date(time * 1000);
+        let now = new Date();
+        let diffValue = now - date;
+        let diffType = "";
+        let result = "";
+        let minute = 1000 * 60;
+        let hour = minute * 60;
+        let day = hour * 24;
+        let week = day * 7;
+        let month = day * 30;
+        let year = day * 365;
+        if (diffValue < 0) {
+            return "刚刚";
+        }
+        let yearC = diffValue / year;
+        let monthC = diffValue / month;
+        let weekC = diffValue / week;
+        let dayC = diffValue / day;
+        let hourC = diffValue / hour;
+        let minC = diffValue / minute;
+        if (yearC > 1) {
+            diffType = "年";
+        }
+        else if (monthC > 1) {
+            diffType = "个月";
+        }
+        else if (weekC > 1) {
+            diffType = "周";
+        }
+        else if (dayC > 1) {
+            diffType = "天";
+        }
+        else if (hourC > 1) {
+            diffType = "小时";
+        }
+        else if (minC > 1) {
+            diffType = "分钟";
+        }
+        else {
+            diffType = "秒";
+        }
+        if (diffValue > year) {
+            result = parseInt(yearC) + diffType + "前";
+        }
+        else if (diffValue > month) {
+            result = parseInt(monthC) + diffType + "前";
+        }
+        else if (diffValue > week) {
+            result = parseInt(weekC) + diffType + "前";
+        }
+        else if (diffValue > day) {
+            result = parseInt(dayC) + diffType + "前";
+        }
+        else if (diffValue > hour) {
+            result = parseInt(hourC) + diffType + "前";
+        }
+        else if (diffValue > minute) {
+            result = parseInt(minC) + diffType + "前";
+        }
+        else {
+            result = "刚刚";
+        }
+        return result;
+    }
+
+
 }

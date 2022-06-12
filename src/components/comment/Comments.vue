@@ -16,7 +16,7 @@
             <a :href="(data.url == null) ? data.url : '//'+data.url" target="_blank">{{ data.nickname }}</a>
             <a href="javascript:;" @click="btnReply(data.id)" class=" reply-btn " >回复</a>
           </h5>
-          <p class="comment-item-text">{{ data.create_time }}</p>
+          <p class="comment-item-text">{{ fmt(data.create_time) }}</p>
           <p class="text-muted">{{ data.content }}</p>
         </div>
       </div>
@@ -33,7 +33,7 @@
             <a :href="(!reply.expand.url) ? 'javasctipt:;' : '//' + reply.expand.url" target="_blank">{{ reply.nickname }}</a>
             <a href="javascript:;" @click="btnReply(reply.id)" class=" reply-btn ">回复</a>
           </h5>
-          <p class="comment-item-text">{{ reply.create_time }}</p>
+          <p class="comment-item-text">{{ fmt(reply.create_time) }}</p>
           <p class="text-muted">{{ reply.content }}</p>
         </div>
         <!-- 评论框 - 开始 -->
@@ -84,6 +84,7 @@ import {useStore} from "vuex";
 import {inisHelper} from "@/utils/helper";
 import Reply from "@/components/comment/Reply";
 import {toast} from "@/utils/toast";
+import {Tools} from '@/utils/tools'
 
 export default {
   name: "Comments",
@@ -97,6 +98,7 @@ export default {
   setup(props){
     const route = useRoute()
     const store = useStore()
+    const tools = new Tools()
     const state = reactive({
       comments: [],           // 评论 - 回复 - 内容
       is_show: true,          // 评论框显示
@@ -140,6 +142,9 @@ export default {
           if(state.comments_reply_id != null) state.is_show = false
         }
       },
+      fmt(time){
+        return tools.timetostamp(time)
+      }
     }
     onMounted(()=>{
       methods.getComments(1)

@@ -24,5 +24,9 @@ router.beforeEach(async to =>{
     if(!window.sessionStorage['TAG_LIST']){
         await store.dispatch('tags/getTags')
     }
-
+    if(to.name === 'ArticleView') {
+        await store.dispatch('context/setStatus',true)
+    }else {
+        await store.dispatch('context/setStatus',false)
+    }
 })

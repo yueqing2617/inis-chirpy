@@ -11,7 +11,7 @@
      </div>
      <div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down">
       <div class="access topbar-down">
-<!--        <context v-if="ctstate"/>-->
+        <context v-if="ctstate"/>
        <recent/>
        <hot-tags/>
       </div>
@@ -38,6 +38,7 @@ import {onBeforeRouteUpdate, useRoute} from 'vue-router'
 import { useStore } from 'vuex'
 import Context from "@/components/common/Context";
 import {reactive, toRefs} from "@vue/reactivity";
+import {computed} from "vue";
 
 export default {
   components: {Context, Sidebar, Topbar, Recent, HotTags, Footers,SearchResult },
@@ -52,17 +53,9 @@ export default {
       })
     })
     const state = reactive({
-      ctstate: false
+      ctstate: computed(() => store.state.context.status),
     })
-    onBeforeRouteUpdate((to,form,next)=>{
-      if(to.name === 'ArticleView' || to.name === 'Page') {
-        state.ctstate = true
-        // methods.createMenu()
-      }else {
-        state.ctstate = false
-      }
-      next()
-    })
+
     return {
       ...toRefs(state)
     }
